@@ -1,22 +1,14 @@
-FROM ubuntu:latest
+FROM ubuntu:20.04
 
-# Update the package list and install necessary packages
+# Update package list and install prerequisites
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    git 
+    software-properties-common
 
-# Install PyYAML
-RUN pip3 install PyYAML
+# Add the deadsnakes PPA for Python 3.10
+RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update
 
-# Copy your Python script to the /usr/bin directory
-COPY feed.py /usr/bin/feed.py
+# Install Python 3.10
+RUN apt-get install -y python3.10
 
-# Copy the entrypoint script to the root directory
-COPY entrypoint.sh /entrypoint.sh
-
-# Make the entrypoint script executable
-RUN chmod +x /entrypoint.sh
-
-# Define the entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
+# Install other dependencies
+RUN apt-get install -y python3-pip git
